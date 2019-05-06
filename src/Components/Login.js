@@ -11,7 +11,7 @@ class Login extends Component {
     };
   }
   componentDidMount () {
-    let dbx = new Dropbox({ clientId: 't82fnfyg4xi31cd' });
+    let dbx = new Dropbox({ clientId: 'kocks4sd5s0co63' });
     this.setState({ authUrl: dbx.getAuthenticationUrl('http://localhost:3000/auth') })
     // let dbxGet = new Dropbox({ accessToken: Auth.getAccessTokenFromUrl() });
     // dbxGet.filesListFolder({path: ''})
