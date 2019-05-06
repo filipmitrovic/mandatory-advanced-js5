@@ -27,7 +27,7 @@ class Login extends Component {
     return (
       <>
         <Helmet>
-          <title>Login</title>
+          <title>Login-</title>
         </Helmet>
         <div>
           <a href={this.state.authUrl} target="_blank" rel="noopener noreferrer">Login</a>
