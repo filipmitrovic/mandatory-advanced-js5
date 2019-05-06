@@ -15,7 +15,7 @@ class Home extends Component {
     return (
       <>
         <Helmet>
-          <title>Home</title>
+          <title>Home s</title>
         </Helmet>
         <div>
           <p>home</p>
