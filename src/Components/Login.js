@@ -10,24 +10,17 @@ class Login extends Component {
       authUrl: '',
     };
   }
+
   componentDidMount () {
     let dbx = new Dropbox({ clientId: 'kocks4sd5s0co63' });
-    this.setState({ authUrl: dbx.getAuthenticationUrl('http://localhost:3000/auth') })
-    // let dbxGet = new Dropbox({ accessToken: Auth.getAccessTokenFromUrl() });
-    // dbxGet.filesListFolder({path: ''})
-    //   .then((response) => {
-    //     console.log(response.entries);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
+    this.setState({ authUrl: dbx.getAuthenticationUrl('http://localhost:3000/auth') });
   }
 
   render() {
     return (
       <>
         <Helmet>
-          <title>Login-</title>
+          <title>Login</title>
         </Helmet>
         <div>
           <a href={this.state.authUrl} target="_blank" rel="noopener noreferrer">Login</a>

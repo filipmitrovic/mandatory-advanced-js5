@@ -4,7 +4,7 @@ import qs from "query-string";
 
 function Auth(props) {
   const [isAuthenticated, updateIsAuthenticated] = useState(false);
-
+  
   function getAccessTokenFromUrl() {
     const params = qs.parse(props.location.hash);
     return params.access_token;
@@ -23,4 +23,5 @@ function Auth(props) {
 
   return <p>Loading...</p>;
 }
+
 export default Auth;
