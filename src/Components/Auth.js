@@ -18,7 +18,7 @@ function Auth(props) {
   }, []);
 
   if (isAuthenticated) {
-    return <Redirect to="/" />;
+    return <Redirect to="/home" />;
   }
 
   return <p>Loading...</p>;
