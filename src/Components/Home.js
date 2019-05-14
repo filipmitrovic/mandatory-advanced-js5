@@ -9,20 +9,46 @@ class home extends Component {
         this.state = {
             filelist: "",
             entries: [],
-            mainpath:{path: ''}
+            mainpath:""
         };
         this.download = this
             .download
-            .bind(this)
+            .bind(this);
+            this.list = this.list.bind(this);
+            this.update = this.update.bind(this)
 
     }
     componentDidMount() {
+        const currentPath = this.props.location.pathname.slice(5);
+        this.list(currentPath);
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.location.pathname !== this.props.location.pathname) {
+            const currentPath = this.props.location.pathname.slice(5);
+
+            console.log(currentPath);
+            this.list(currentPath);
+    
+        }
+
+        
+    }
+
+    update(newpath){
+        this.setState({mainpath:newpath})
+        window.location.href = "/home"+newpath
+        console.log(this.state.mainpath)
+    }
+    list(path){
+        console.log(path)
+        console.log("list")
         console.log(this.state.mainpath)
         const accessToken = localStorage.token;
         console.log(accessToken)
         const dbx = new Dropbox({accessToken, fetch});
         dbx
-            .filesListFolder(this.state.mainpath)
+            .filesListFolder({path:path})
             .then(response => {
                 let data = JSON.parse(response)
                 this.setState({filelist: data, entries: data.entries})
@@ -52,6 +78,8 @@ class home extends Component {
             cursor: "pointer"
         }
         console.log(this.state.entries);
+        console.log(this.state.mainpath)
+        //this.list(this.state.mainpath)
         return (
             <div className="main--home">
                 <div className="path-container">
@@ -75,7 +103,7 @@ class home extends Component {
                                 <th scope="row">
                                     <i style={pointerstyle} className="far fa-star"></i>
                                 </th>
-                                <td>{x.name}</td>
+                                <td><Link to={"/home" + x.path_display}>{x.name}</Link></td>
                                 <td>{x.path_display}</td>
                                 <td>{x.size}</td>
                                 <td>
