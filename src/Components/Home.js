@@ -9,13 +9,17 @@ class home extends Component {
         this.state = {
             filelist: "",
             entries: [],
-            mainpath:""
+            mainpath:"",
+            files:''
         };
         this.download = this
             .download
             .bind(this);
             this.list = this.list.bind(this);
             this.update = this.update.bind(this)
+            this.onSubmit = this.onSubmit.bind(this)
+            this.inputRef = React.createRef(null);
+            this.link = this.link.bind(this)
 
     }
     componentDidMount() {
@@ -34,7 +38,28 @@ class home extends Component {
 
         
     }
-
+    icons(type) { // Created by Filip
+        if (type === 'folder') {
+          return <i class="fas fa-folder"></i>;
+        }
+        if (type === 'file') {
+          return <i class="fas fa-file"></i>;
+        }
+      }
+    onSubmit(e) {
+        e.preventDefault();
+        const file = this.inputRef.current.files[0];
+        const newFile = Array.from(file).map(URL.createObjectURL);
+        let ACCESS_TOKEN = localStorage.token;
+        let dbx = new Dropbox({ accessToken: ACCESS_TOKEN });
+        dbx.filesUpload({path: '/' + file.name, contents: file})
+          .then(function(response) {
+            console.log(response);
+          })
+          .catch(function(error) {
+            console.error(error);
+          });
+      }
     update(newpath){
         this.setState({mainpath:newpath})
         window.location.href = "/home"+newpath
@@ -73,6 +98,15 @@ class home extends Component {
             })
 
     }
+    link(x){
+        console.log("this is link " +x)
+        if(x[".tag"] === "folder"){
+            return <Link to={"/home" + x.path_display}>{x.name}</Link>
+        }
+        else if (x[".tag"] !== "folder"){
+            return <Link>{x.name}</Link>
+        }
+    }
     render() {
         let pointerstyle = {
             cursor: "pointer"
@@ -89,6 +123,7 @@ class home extends Component {
                     <thead>
                         <tr>
                             <th scope="col">Fav</th>
+                            <th scope="col">type</th>
                             <th scope="col">FileName</th>
                             <th scope="col">path</th>
                             <th scope="col">size</th>
@@ -103,7 +138,9 @@ class home extends Component {
                                 <th scope="row">
                                     <i style={pointerstyle} className="far fa-star"></i>
                                 </th>
-                                <td><Link to={"/home" + x.path_display}>{x.name}</Link></td>
+                                <td>{this.icons(x[".tag"])}</td>
+
+                                <td>{this.link(x)}</td>
                                 <td>{x.path_display}</td>
                                 <td>{x.size}</td>
                                 <td>
@@ -113,6 +150,10 @@ class home extends Component {
 
                     </tbody>
                 </table>
+                <form onSubmit={this.onSubmit}>
+        <input ref={this.inputRef} type="file" multiple/>
+        <button type="submit">Upload</button>
+      </form>
             </div>
         )
     }
