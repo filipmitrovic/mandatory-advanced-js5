@@ -111,13 +111,12 @@ class home extends Component {
         let pointerstyle = {
             cursor: "pointer"
         }
-        console.log(this.state.entries);
-        console.log(this.state.mainpath)
+
         //this.list(this.state.mainpath)
         return (
             <div className="main--home">
                 <div className="path-container">
-                <h2>/home{this.state.mainpath.path}</h2>
+                <h2>{window.location.pathname}</h2>
                 </div>
                 <table class="table">
                     <thead>
