@@ -10,7 +10,8 @@ class home extends Component {
             filelist: "",
             entries: [],
             mainpath:"",
-            files:''
+            files:'',
+            name:""
         };
         this.download = this
             .download
@@ -19,7 +20,11 @@ class home extends Component {
             this.update = this.update.bind(this)
             this.onSubmit = this.onSubmit.bind(this)
             this.inputRef = React.createRef(null);
-            this.link = this.link.bind(this)
+            this.link = this.link.bind(this);
+            this.getInputValues = this.getInputValues.bind(this);
+            this.createfolderv2 = this.createfolderv2.bind(this);
+            this.DeleteArg = this.DeleteArg.bind(this);
+            this.ikon = this.ikon.bind(this);
 
     }
     componentDidMount() {
@@ -35,6 +40,25 @@ class home extends Component {
     
         }
     }
+    ikon(x){
+        console.log(x);
+        const accessToken = localStorage.token;
+        const dbx = new Dropbox({accessToken, fetch});
+        const fileType = /\.(gif|jpg|jpeg|tiff|tif|png|bmp)$/i;
+        
+        if(x[".tag"] === "file" && fileType.test(x.name)){
+            dbx.filesGetThumbnail({
+                path: x.path_display
+            })
+            .then((response) =>{
+                let test = response
+                console.log(test)
+                console.log("this is ikon response"+response)
+            })
+        }
+
+        
+    }
     createfolderv2(e){
         var accessToken = localStorage.token;
         var dbx = new Dropbox({ accessToken, fetch });
@@ -42,6 +66,7 @@ class home extends Component {
       
       dbx.filesCreateFolderV2({path: "/" + this.state.name})
         .then(function(response) {
+        window.location.reload()
           console.log(response)
         })
         .catch(function(error) {
@@ -50,6 +75,7 @@ class home extends Component {
       
       }
       getInputValues = e => {
+          console.log(e.target.value)
         this.setState({ name: e.target.value });
       }
       
@@ -81,6 +107,7 @@ class home extends Component {
     onSubmit(e) {
         e.preventDefault();
         const currentPath = this.props.location.pathname.slice(5);
+        console.log(currentPath)
         const file = this.inputRef.current.files[0];
         const newFile = Array.from(file).map(URL.createObjectURL);
         let ACCESS_TOKEN = localStorage.token;
@@ -113,6 +140,7 @@ class home extends Component {
                 this.setState({filelist: data, entries: data.entries})
                 console.log(this.state.filelist)
                 console.log(this.state.entries)
+
             })
     }
     download(path) { //this function created bu Filip edited by Hesham
@@ -157,6 +185,7 @@ class home extends Component {
                         <tr>
                             <th scope="col">Fav</th>
                             <th scope="col">type</th>
+                            <th scope="col">test</th>
                             <th scope="col">FileName</th>
                             <th scope="col">path</th>
                             <th scope="col">size</th>
@@ -173,7 +202,7 @@ class home extends Component {
                                     <i style={pointerstyle} className="far fa-star"></i>
                                 </th>
                                 <td>{this.icons(x[".tag"])}</td>
-
+                                <td>test{this.ikon(x)}</td>
                                 <td>{this.link(x)}</td>
                                 <td>{x.path_display}</td>
                                 <td>{x.size}</td>
@@ -187,6 +216,10 @@ class home extends Component {
 
                     </tbody>
                 </table>
+                <button onClick={this.createfolderv2}>New folder </button><input
+                        type="text"
+                        value={this.value}
+                        onChange={this.getInputValues}/>
                 <form onSubmit={this.onSubmit}>
         <input ref={this.inputRef} type="file" multiple/>
         <button type="submit">Upload</button>
