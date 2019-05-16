@@ -30,14 +30,46 @@ class home extends Component {
     componentDidUpdate(prevProps) {
         if (prevProps.location.pathname !== this.props.location.pathname) {
             const currentPath = this.props.location.pathname.slice(5);
-
             console.log(currentPath);
             this.list(currentPath);
     
         }
-
-        
     }
+    createfolderv2(e){
+        var accessToken = localStorage.token;
+        var dbx = new Dropbox({ accessToken, fetch });
+      
+      
+      dbx.filesCreateFolderV2({path: "/" + this.state.name})
+        .then(function(response) {
+          console.log(response)
+        })
+        .catch(function(error) {
+          console.error(error);
+        });
+      
+      }
+      getInputValues = e => {
+        this.setState({ name: e.target.value });
+      }
+      
+      
+      DeleteArg = (e)=>{
+      let files = this.state.entries
+      var accessToken = localStorage.token;
+      var dbx = new Dropbox({ accessToken, fetch });
+      dbx.filesDeleteV2({path: e})
+      .then (function(res){
+        window.location.reload()
+      console.log(typeof files);
+      [...files].map(file=>file.id !==res.entries.id)
+      })
+      
+      .catch (function(err){
+        console.log(err)
+      })
+      
+      }
     icons(type) { // Created by Filip
         if (type === 'folder') {
           return <i class="fas fa-folder"></i>;
@@ -48,12 +80,14 @@ class home extends Component {
       }
     onSubmit(e) {
         e.preventDefault();
+        const currentPath = this.props.location.pathname.slice(5);
         const file = this.inputRef.current.files[0];
         const newFile = Array.from(file).map(URL.createObjectURL);
         let ACCESS_TOKEN = localStorage.token;
         let dbx = new Dropbox({ accessToken: ACCESS_TOKEN });
         dbx.filesUpload({path: '/' + file.name, contents: file})
           .then(function(response) {
+            window.location.reload()
             console.log(response);
           })
           .catch(function(error) {
@@ -127,6 +161,7 @@ class home extends Component {
                             <th scope="col">path</th>
                             <th scope="col">size</th>
                             <th scope="col">Download</th>
+                            <th scope="col">Delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -144,6 +179,9 @@ class home extends Component {
                                 <td>{x.size}</td>
                                 <td>
                                     <i style={pointerstyle} onClick={()=>{this.download(x.path_display)}} class="fas fa-cloud-download-alt"></i>
+                                </td>
+                                <td>
+                                <button onClick={() => this.DeleteArg(x.path_display)}>Delete</button>
                                 </td>
                             </tr>)}
 
